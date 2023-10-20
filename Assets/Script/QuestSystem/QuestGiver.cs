@@ -13,12 +13,12 @@ public class QuestGiver : MonoBehaviour
     public string questCompletedMsg;
 
     public int xp = 50;
-
     public int po = 25;
 
     public GameObject[] ToHideAfterQuestCompleted;
     public GameObject[] ToHideShowQuestCompleted;
 
+    public string questName;
 
     public void HideObjectAfterQuest(){
         foreach (GameObject go in ToHideAfterQuestCompleted)

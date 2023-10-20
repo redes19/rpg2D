@@ -7,11 +7,18 @@ public class QuestTaker : MonoBehaviour
 
     QuestGiver qg;
 
+    HeroStats hs;
+
+    void Start() {
+        hs = GetComponent<HeroStats>();
+    }
+
     void OnTriggerEnter2D(Collider2D other) {
         if(other.gameObject.tag == "AddQuest"){
             if(qg == null){
                 qg = other.gameObject.GetComponent<QuestGiver>();
-                if(!qg.quest.isActive){ // quest non active 
+                int isQuestDone = PlayerPrefs.GetInt(qg.questName, 0);
+                if(!qg.quest.isActive && isQuestDone == 0){ // quest non active 
                     qg.questPannel.SetActive(true);
                     qg.QuestInfos[0].SetText(qg.quest.title);
                     qg.QuestInfos[1].SetText(qg.quest.desc);
@@ -22,12 +29,14 @@ public class QuestTaker : MonoBehaviour
                         qg.HideObjectAfterQuest();
                         qg.ShowObjectAfterQuestTaken();
                         print("Recompense = xp " + qg.xp + " | gold: " + qg.po);
-                        print(qg.questCompletedMsg);
                         GetComponent<HeroCollider>().ShowDialCanvasTxt(qg.questCompletedMsg);
-                        GetComponent<HeroStats>().xp += qg.xp;
-                        GetComponent<HeroStats>().po += qg.po;
+                        hs.xp += qg.xp;
+                        hs.po += qg.po;
                         qg.po = 0;
-                        qg.xp = 0;   
+                        qg.xp = 0;
+                        hs.LevelUp();
+                        hs.SetGUIVals();
+                        PlayerPrefs.SetInt(qg.questName, 1);
                     }
                 }
             }

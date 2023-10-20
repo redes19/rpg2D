@@ -20,6 +20,16 @@ public class HeroCollider : MonoBehaviour
 
     public QuestGiver[] quests;
 
+    public GameObject camFight;
+
+    HeroStats hs;
+
+    public GameObject shop;
+
+    void Start(){
+        hs = GetComponent<HeroStats>();
+    }
+
     void OnTriggerEnter2D(Collider2D other) {
         
         if(other.gameObject.tag == "sign"){
@@ -55,8 +65,22 @@ public class HeroCollider : MonoBehaviour
             // PlayerPrefs.SetFloat("posY", other.gameObject.GetComponent<ExitBehaviour>().teleportPositions.Y);
         }
 
-        if(other.gameObject.tag == "mob"){
+        if(other.gameObject.tag == "mob" && !camFight.activeInHierarchy){
             print("combat");
+            camFight.SetActive(true);
+            InitializeFight initF = camFight.GetComponent<InitializeFight>();
+            initF.hfs.baseEnnemy = other.gameObject;
+            initF.initFight();
+        }
+
+        if(other.gameObject.tag == "coin"){
+            Destroy(other.gameObject);
+            hs.po += Random.Range(3,10);
+            hs.SetGUIVals();
+        }
+
+        if(other.gameObject.tag == "shop"){
+            shop.SetActive(true);
         }
 
     }
@@ -83,6 +107,9 @@ public class HeroCollider : MonoBehaviour
             otherObj = null;
         }
 
+        if(other.gameObject.tag == "shop"){
+            shop.SetActive(false );
+        }
 
     }
 
@@ -130,16 +157,13 @@ public class HeroCollider : MonoBehaviour
     // }
 
     public void ShowDial(){
-        SignBehaviour sb = otherObj.gameObject.
-        GetComponent<SignBehaviour>();
+    if (otherObj != null) {
+        SignBehaviour sb = otherObj.gameObject.GetComponent<SignBehaviour>();
         sb.ui.SetActive(false);
         dialWorldSpace.SetActive(true);
-
-        // print(sb.signTexte); //récupère le texte dans signBehaviour
-
-        // dialTxt.text = sb.singTexte; // change la valeur du texte
-        dialTxt.SetText(sb.signTexte);// la meme qu'au decut
+        dialTxt.SetText(sb.signTexte);
     }
+}
 
 
     // POUR LES PNJ !!!
@@ -168,12 +192,12 @@ public class HeroCollider : MonoBehaviour
     }
 
     void PNJDial(){
+    if (otherDial != null) {
         PNJSimpleDial pnj = otherDial.gameObject.GetComponent<PNJSimpleDial>();
         pnj.ui.SetActive(false);
-
         ShowDialCanvasTxt(pnj.simpleDial);
-        // txtCanvas.SetText(pnj.simpleDial);
     }
+}
 
     public void ShowDialCanvasTxt(string msg){
         dialCanvas.SetActive(true);

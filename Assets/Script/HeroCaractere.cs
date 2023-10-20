@@ -18,13 +18,11 @@ public class HeroCaractere : MonoBehaviour
     int dirValue = 0; // 0=idl 1=WalkDown 2=WalkSide 3 = WalkUp
 
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         HandleKeys();
